@@ -1,28 +1,19 @@
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useEffect, useReducer, useState} from "react";
+import {authReducer} from "../reducers/AuthReducer";
 
 export const AuthContext = createContext()
 
 const AuthContextProvider = ({children}) =>{
-    const [isAuth,setAuth] = useState(false)
+    const [isAuth,dispatch] = useReducer(authReducer)
 
-    const toggleAuth = ()=>{
-        let check = isAuth;
-        check = !check;
-        setAuth(check)
-    }
-    // useEffect(()=>{
-    //     const auth =   JSON.parse(localStorage.getItem("auth"))
-    //     if(auth!==undefined) setAuth(auth)
-    //
-    // },[])
+
     useEffect(()=>{
-        localStorage.setItem("auth",isAuth)
-        const auth =JSON.parse(localStorage.getItem("auth"))
-        alert(auth===true?"đã login":"chưa login xin mời login")
+        alert(isAuth?"đã đăng nhập":"chưa đăng nhập")
     },[isAuth])
+
     const authContextData = {
         isAuth,
-        toggleAuth
+        dispatch
     }
     return (
         <AuthContext.Provider value={authContextData}>
