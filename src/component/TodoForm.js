@@ -1,23 +1,30 @@
 import React, {useContext, useState} from "react";
 import {ThemeContext} from "../contexts/ThemeContext";
+import {TodoContext} from "../contexts/TodoContext";
+import {AuthContext} from "../contexts/AuthContext";
 
-const TodoForm = (props) =>{
+const TodoForm = () =>{
     const [title,setTitle] = useState("");
     const {theme} = useContext(ThemeContext)
     const {isLightTheme,light,dark} = theme
     const style = isLightTheme? light:dark
+
+    const {addTodo} = useContext(TodoContext)
+    const {isAuth} = useContext(AuthContext)
     const  onTitleChange = (e)=>{
         setTitle(e.target.value);
     }
-    const addTodo = (event)=>{
+    const add = (event)=>{
         event.preventDefault();
-        props.addTodo(title);
-        setTitle("")
+        if(isAuth){
+            addTodo(title);
+            setTitle("")
+        }
     }
     return (
         <form>
             <input type="text" onChange={onTitleChange} value={title} required name="title"/>
-            <input style={style} type="submit" onClick={addTodo} value="Thêm"/>
+            <input style={style} type="submit" onClick={add} value="Thêm"/>
         </form>
     )
 }
