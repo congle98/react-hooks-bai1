@@ -2,14 +2,15 @@ import React, {useContext, useState} from "react";
 import {ThemeContext} from "../contexts/ThemeContext";
 import {TodoContext} from "../contexts/TodoContext";
 import {AuthContext} from "../contexts/AuthContext";
-
+import {ADD_TODO} from "../reducers/types";
+import { v4 as uuid } from 'uuid';
 const TodoForm = () =>{
     const [title,setTitle] = useState("");
     const {theme} = useContext(ThemeContext)
     const {isLightTheme,light,dark} = theme
     const style = isLightTheme? light:dark
 
-    const {addTodo} = useContext(TodoContext)
+    const {dispatch} = useContext(TodoContext)
     const {isAuth} = useContext(AuthContext)
     const  onTitleChange = (e)=>{
         setTitle(e.target.value);
@@ -17,7 +18,15 @@ const TodoForm = () =>{
     const add = (event)=>{
         event.preventDefault();
         if(isAuth){
-            addTodo(title);
+            dispatch({
+                type:ADD_TODO,
+                payload:{
+                   todo:{
+                       id:uuid(),
+                       title:title
+                   }
+                }
+            })
             setTitle("")
         }
     }

@@ -1,48 +1,34 @@
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useEffect,useReducer} from "react";
+import {todoReducer} from "../reducers/TodoReducers";
+import {GET_TODOS, SAVE_TODOS} from "../reducers/types";
 
 export const TodoContext = createContext()
 
 const TodoContextProvider = ({children})=>{
-    const [todos,setTodos] = useState(
-        // JSON.parse(localStorage.getItem("todos"))?JSON.parse(localStorage.getItem("todos")):[
-        //             {
-        //                 id:1,
-        //                 title: "việc 1"
-        //             },
-        //             {
-        //                 id:2,
-        //                 title: "việc 2"
-        //             },
-        //             {
-        //                 id:3,
-        //                 title: "việc 3"
-        //             }
-        //         ]
-        []
-    );
+
+    const [todos,dispatch] = useReducer(todoReducer,[])
 
     //lấy dữ liệu lần đầu
     useEffect(()=>{
-        const todos = localStorage.getItem("todos")
-        if(todos) setTodos(JSON.parse(todos))
+        dispatch({
+            type:GET_TODOS,
+            payload:null
+        })
     },[])
     //userEffect
     //lắng nghe thay đổi của todos
     useEffect(()=>{
-        localStorage.setItem("todos",JSON.stringify(todos))
+        dispatch({
+            type:SAVE_TODOS,
+            payload:{
+                todos:todos
+            }
+        })
     },[todos])
-    const addTodo = (title)=>{
-        setTodos([...todos,{id:(todos.length?todos[todos.length-1].id +1:1),title:title }])
-    }
-    const deleteTodo = (id)=>{
-        setTodos(todos.filter(todo => todo.id!==id))
-    }
-
     //contex data
     const todoContextData = {
         todos,
-        addTodo,
-        deleteTodo
+        dispatch
     }
 
 
